@@ -1,12 +1,44 @@
-# Cross-platform-ish Makefile for mac/linux.
-# Windows users: use the .bat scripts in the scripts/ folder.
+# Cross-platform Makefile (macOS / Linux / Windows-with-make).
+#
+# Windows users running cmd.exe or PowerShell should use the .bat scripts in
+# the scripts/ folder. This Makefile works on Windows only inside an
+# environment that provides `make` (Git Bash, MSYS2, WSL, Cygwin).
 
-PYTHON ?= python3
-VENV   ?= .venv
-BIN     = $(VENV)/bin
-PIP     = $(BIN)/pip
-PY      = $(BIN)/python
-APP    ?= src/main.py
+# --- OS detection -----------------------------------------------------------
+ifeq ($(OS),Windows_NT)
+    DETECTED_OS := Windows
+else
+    DETECTED_OS := $(shell uname -s)
+endif
+
+# --- Python executable auto-detection --------------------------------------
+# Priority: explicit PYTHON override > python3 > python > py -3
+ifeq ($(origin PYTHON),undefined)
+    ifneq ($(shell command -v python3 2>/dev/null),)
+        PYTHON := python3
+    else ifneq ($(shell command -v python 2>/dev/null),)
+        PYTHON := python
+    else ifneq ($(shell command -v py 2>/dev/null),)
+        PYTHON := py -3
+    else
+        PYTHON := python3
+    endif
+endif
+
+VENV ?= .venv
+
+# venv layout differs between POSIX (bin/) and Windows (Scripts/)
+ifeq ($(DETECTED_OS),Windows)
+    BIN = $(VENV)/Scripts
+    PY  = $(BIN)/python.exe
+    PIP = $(BIN)/pip.exe
+else
+    BIN = $(VENV)/bin
+    PY  = $(BIN)/python
+    PIP = $(BIN)/pip
+endif
+
+APP ?= src/main.py
 
 .PHONY: help venv install setup run clean reset
 

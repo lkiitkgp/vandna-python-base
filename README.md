@@ -1,10 +1,17 @@
 # vandna-python-base
 
 A minimal Python project base with virtual environment and dependency management
-driven by a `Makefile` (macOS / Linux) and `.bat` scripts (Windows).
+driven by a `Makefile` (macOS / Linux / Git Bash / WSL) and `.bat` scripts
+(Windows `cmd.exe` / PowerShell).
 
-> Assumes Python 3 is already installed and available on your `PATH`
-> (`python3` on macOS/Linux, `python` on Windows).
+> Assumes Python 3 is already installed and available on your `PATH`.
+> The Makefile auto-detects `python3`, `python`, or the `py` launcher.
+> The `.bat` scripts prefer the `py -3` launcher and fall back to `python`.
+>
+> **Windows note:** If `python` opens the Microsoft Store, either install
+> Python from [python.org](https://www.python.org/downloads/windows/) with
+> "Add python.exe to PATH" checked, or disable the App Execution Alias
+> (Settings → Apps → Advanced app settings → App execution aliases).
 
 ## Project structure
 
@@ -45,7 +52,7 @@ make reset     # delete the virtual environment
 make help      # list all targets
 ```
 
-## Windows
+## Windows (cmd.exe / PowerShell)
 
 One-time setup:
 
@@ -64,6 +71,11 @@ You can pass extra arguments through to the script, e.g.:
 ```bat
 scripts\run.bat --some-flag value
 ```
+
+> If you have `make` available (Git Bash, MSYS2, or WSL), the `make` targets
+> above also work on Windows — the [`Makefile`](Makefile:1) auto-detects the
+> Python executable and the correct venv layout (`Scripts/` on Windows,
+> `bin/` on POSIX).
 
 ## Adding dependencies
 
